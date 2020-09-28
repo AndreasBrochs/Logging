@@ -3,4 +3,4 @@
 Logging information to the console using **Serilog** 
 much easier then Ilogger
 
-Need to download nuget packages Serilog and Serilog.Sinks.Console
+Need to download nuget packages Serilog and Serilog.Sinks.Console and Serilog.Sinks.ApplicationInsights
