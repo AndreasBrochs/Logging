@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 
 
@@ -9,8 +11,15 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            // you may use different options to create configuration as shown later in this article
+            TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
+            configuration.InstrumentationKey = "your key here";
+            var telemetryClient = new TelemetryClient(configuration);
+            telemetryClient.TrackTrace("Hello World!");
+
             var log = new LoggerConfiguration()
              .WriteTo.Console()
+             .WriteTo.ApplicationInsights(configuration, TelemetryConverter.Traces)
              .CreateLogger();
 
             //TODO: log "Hello World!"
@@ -22,7 +31,7 @@ namespace ConsoleApp1
             {
                 int randomSleep = rand.Next(1, 50);
                 //TODO: log "Sleeping for 2.7 seconds"
-                log.Information($"Sleeping for {SleepTimeToSec(randomSleep)}");
+                log.Information("Sleeping for {sleepTime}", SleepTimeToSec(randomSleep));
                 //NOTE: use the SleepTimeToSec method to make the randomSleep human readable
                 Thread.Sleep(randomSleep * 100);
                 //TODO: log "Send data to Azure"
@@ -36,7 +45,7 @@ namespace ConsoleApp1
             }
             //TODO: log "Exit"
             log.Information("good bye");
-            
+
         }
 
         static double SleepTimeToSec(int sleeptime)
